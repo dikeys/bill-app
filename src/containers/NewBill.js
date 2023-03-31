@@ -17,11 +17,24 @@ export default class NewBill {
   }
   handleChangeFile = e => {
     e.preventDefault()
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    const fileInput = this.document.querySelector(`input[data-testid="file"]`)
+    const file = fileInput.files[0]
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     const formData = new FormData()
+    const allowedFileTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    const spanError = this.document.getElementById('error-file')
     const email = JSON.parse(localStorage.getItem("user")).email
+    if(spanError){
+      spanError.remove()
+    }
+    
+    if (!allowedFileTypes.includes(file.type)) {
+      fileInput.value = ""
+     return fileInput.insertAdjacentHTML("afterend", "<span id='error-file'>format fichier incorrect</span>");
+  }
+
+
     formData.append('file', file)
     formData.append('email', email)
 
